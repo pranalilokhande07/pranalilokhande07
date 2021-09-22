@@ -1,0 +1,248 @@
+#include <stdio.h>
+#include <stdlib.h>
+struct node
+{
+  struct node *prev;
+  int info;
+  struct node *next;
+}*start;
+void create_list();
+void display();
+void insert_at_beg(int data);
+void addafter(int data, int pos);
+void delete(int data);
+void count();
+void Search();
+void reverse();
+void exit();
+
+ 
+ void create_list(int data)
+{
+  struct node *q,*tmp;
+  tmp=malloc(sizeof(struct node));
+  tmp->info=data;
+  tmp->next=NULL;
+  if(start==NULL)
+  {
+    tmp->prev=NULL;
+    start=tmp;
+  }
+  else
+  {
+    q=start;
+    while(q->next!=NULL)
+    q=q->next;
+    q->next=tmp;
+    tmp->prev=q;
+  }
+}
+void display()
+{
+ struct node *q;
+ if(start==NULL)
+ {
+   printf("empty list\n");
+   return;
+ }
+ q=start;
+ printf("list is:\n");
+ while(q!=NULL)
+ {
+   printf("%d", q->info);
+    q=q->next;
+   printf("\n");
+ }
+}
+void insert_at_beg(int data)
+{
+  struct node *tmp;
+  tmp=malloc(sizeof(struct node));
+  tmp->info=data;
+  tmp->prev=NULL;
+  tmp->next=start;
+  start->prev=tmp;
+  start=tmp;
+}
+ void addafter(int data, int pos)
+ {
+   int i;
+   struct node *q, *tmp;
+   q=start;
+   for(i=0;i<pos-1;i++)
+   {
+     q=q->next;
+     if(q==NULL)
+     {
+       printf("invalid position\n");
+       return;
+     }
+   }
+   tmp=malloc(sizeof(struct node));
+   tmp->info=data;
+   if(q->next==NULL)
+   {
+     q->next=tmp;
+     tmp->prev=q;
+     return;
+   }
+   q->next->prev=tmp;
+   tmp->next=q->next;
+   tmp->prev=q;
+   q->next=tmp;
+ }
+
+ void delete(int data)
+ {
+   struct node *tmp,*q;
+   if(start==NULL)
+   {
+     printf("list is empty\n");
+     return;
+   }
+  if(start->info==data)
+   {
+     tmp=start;
+     start=start->next;
+     start->prev=NULL;
+     free(tmp);
+     return;
+    }
+    q=start;
+   while (q->next->next!=NULL)
+   {
+     if (q->next->info==data)
+     {
+       tmp=q->next;
+       q->next=tmp->next;
+       tmp->next->prev=q;
+       free(tmp);
+       return;
+      }
+      q=q->next;
+   } 
+   if(q->next->info==data)
+   {
+     tmp=q->next;
+     free(tmp);
+     q->next=NULL;
+     return;
+   }
+   printf("element %d not found in linked list\n");
+  }
+
+  void count()
+  {
+  struct node *q=start;
+  int cnt=0;
+  while(q!=NULL)
+  {
+    q=q->next;
+    cnt++;
+  }
+  printf("total number of nodes in linked list is %d\n",cnt);
+}
+
+void Search(int data)
+{
+  struct node*q=start;
+  int pos=1;
+  while(q!=NULL)
+  {
+    if(q->info==data)
+    {
+      printf("item %d found at %d position\n",data,pos);
+        return;
+    }
+      q=q->next;
+      pos++;
+  }
+    if(q==NULL)
+    printf("element %d not found in linked list\n",data);
+}
+
+void reverse()
+{
+  struct node *p1,*p2;
+  p1=start;
+  p2=p1->next;
+  p1->next=NULL;
+  p1->prev=p2;
+  while(p2!=NULL)
+  {
+    p2->prev=p2->next;
+    p2->next=p1;
+    p1=p2;
+    p2=p2->prev;
+  }
+  start=p1;
+}
+
+int main()
+{
+  int ch,i,n,m,pos;
+  struct node *start=NULL;
+  while(1)
+ {
+  printf("1. create_list\n");
+  printf("2. Add At Begining\n");
+  printf("3. Add After\n");
+  printf("4. Delete\n");
+  printf("5. Display\n");
+  printf("6. Count\n");
+  printf("7. Reverse\n");
+  printf("8. Search\n");
+  printf("9. Quit\n");
+ printf("enter your choice:\n");
+ scanf("%d",&ch);
+ switch(ch)
+ {
+   case 1: printf("How Many Nodes You Want\n");
+         scanf("%d",&n);
+         for (i=0;i<n;i++)
+         {
+           printf("enter the element\n");
+            scanf("%d",&m);
+             create_list(m);
+          }
+            break;
+ 
+   case 5:
+         display();
+         break;
+
+   case 2:
+         printf("enter the element\n");
+         scanf("%d",&m);
+         insert_at_beg(m);
+         break;         
+   case 3:
+         printf("enter element\n");
+         scanf("%d",&m);
+         printf("enter position\n");
+         scanf("%d",&pos);
+         addafter(m,pos);
+         break;
+  case 4:
+           printf("enter the element to be deleted\n");
+          scanf("%d",&m);
+           delete(m);
+            break;
+  case 6:
+          count();
+          break;
+  case 7:
+          reverse();
+          break;        
+        
+ case 8:
+         printf("enter element to search\n");
+        scanf("%d",&m);
+        Search(m);
+        break;   
+  case 9:
+        exit(1);
+         default: printf("wrong choice\n");           
+  }  
+} 
+}
